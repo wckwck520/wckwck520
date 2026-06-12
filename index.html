@@ -7,77 +7,55 @@
     <script src="https://cdn.tailwindcss.com/"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; -webkit-overflow-scrolling: touch; }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        .dark ::-webkit-scrollbar-thumb { background: #475569; }
-        .perspective-1000 { perspective: 1000px; }
-        .transform-style-3d { transform-style: preserve-3d; }
-        .backface-hidden { backface-visibility: hidden; }
-        .rotate-y-180 { transform: rotateY(180deg); }
     </style>
 </head>
 <body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen">
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect, useMemo } = React;
-
-        // 核心修正：加入智慧語音選擇機制
-        const playThaiSpeech = (thaiText, speechRate) => {
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
-                const utterance = new SpeechSynthesisUtterance(thaiText);
-                
-                // 獲取裝置所有可用聲音
-                const voices = window.speechSynthesis.getVoices();
-                // 優先找泰語，找不到則使用預設聲音，確保一定有聲音
-                const thaiVoice = voices.find(v => v.lang.startsWith('th'));
-                utterance.voice = thaiVoice || null; 
-                utterance.lang = thaiVoice ? 'th-TH' : 'en-US';
-                
-                utterance.rate = speechRate;
-                window.speechSynthesis.speak(utterance);
-            }
+        // --- 修正後的語音播放函式 (改用 Google 線上雲端 TTS) ---
+        const playThaiSpeech = (text) => {
+            const url = `https://translate.google.com/translate_tts?ie=UTF-8&tl=th&client=tw-ob&q=${encodeURIComponent(text)}`;
+            const audio = new Audio(url);
+            audio.play().catch(e => console.error("播放失敗:", e));
         };
 
-        // --- 以下其餘程式碼保持不變 ---
         const RAW_VOCAB_DB = [
-            [6, "kluai", "กล้วย", "香蕉", "kluai wan mak", "กล้วยหวานมาก", "香蕉很甜。"],
-            [15, "ka-fae", "กาแฟ", "咖啡", "chan tong duem ka-fae thuk wan", "ฉันต้องดื่มกาแฟทุกวัน", "我每天都得喝咖啡。"],
-            [18, "kin", "กิน", "吃", "kin khao rue yang", "กินข้าวหรือยัง", "你吃飯了嗎？"],
-            [23, "kluea", "เกลือ", "鹽", "chuai yip kluea hai noi dai mai", "ช่วยหยิบเกลือให้หน่อยได้ไหม", "可以幫我遞一下鹽嗎？"],
-            [29, "kai", "ไก่", "雞、雞肉", "chan chop kin kai thot", "ฉันชอบกินไก่ทอด", "我喜歡吃炸雞。"],
-            [31, "kha-nom-pang", "ขนมปัง", "麵包", "mae kin kha-nom-pang pen a-han chao", "แม่กินขนมปังเป็นอาหารเข้า", "媽媽早餐吃麵包。"],
-            [36, "khong-wan", "ของหวาน", "甜點", "khong-wan thi pra-thet yi-pun a-roy mak", "ของหวานที่ประเทศญี่ปุ่นอร่อยมาก", "日本的甜品非常好吃。"],
-            [58, "khai", "ไข่", "雞蛋", "chanกินไข่เป็นอาหารเช้า", "ฉันกินไข่เป็นอาหารเช้า", "我早餐吃雞蛋。"],
-            [71, "khem", "เค็ม", "鹹的", "kai-thot chan ni khem mak", "ไก่ทอดจานนี้เค็มมาก", "這份炸雞太鹹了。"],
-            [72, "khrueang-duem", "เครื่องดื่ม", "飲品、飲料", "rap khrueang-duem a-rai", "รับเครื่องดื่มอะไร", "想喝點什麼？"],
-            [98, "chon", "ช้อน", "勺子", "chai chon kin khao", "ใช้ช้อนกินข้าว", "用勺子吃飯。"],
-            [102, "cha", "ชา", "茶", "chan duem cha thuk chao", "ฉันดื่มชาทุกเช้า", "我每天早上喝茶。"]
+            [6, "kluai", "กล้วย", "香蕉"],
+            [15, "ka-fae", "กาแฟ", "咖啡"],
+            [18, "kin", "กิน", "吃"],
+            [23, "kluea", "เกลือ", "鹽"],
+            [29, "kai", "ไก่", "雞肉"],
+            [31, "kha-nom-pang", "ขนมปัง", "麵包"],
+            [36, "khong-wan", "ของหวาน", "甜點"],
+            [58, "khai", "ไข่", "雞蛋"],
+            [71, "khem", "เค็ม", "鹹的"],
+            [72, "khrueang-duem", "เครื่องดื่ม", "飲料"],
+            [98, "chon", "ช้อน", "勺子"],
+            [102, "cha", "ชา", "茶"]
         ];
 
         function App() {
-            const [speechRate, setSpeechRate] = useState(0.8);
             return (
-                <div className="p-4">
-                    <h1 className="text-xl font-bold mb-4">泰語 500 大師學習旗艦屋</h1>
-                    <div className="grid gap-4">
+                <div className="p-4 max-w-lg mx-auto">
+                    <h1 className="text-xl font-bold mb-4 text-center">泰語 500 大師學習旗艦屋</h1>
+                    <div className="grid gap-3">
                         {RAW_VOCAB_DB.map((item) => (
-                            <div key={item[0]} className="p-4 bg-white shadow rounded-xl border flex justify-between items-center">
+                            <div key={item[0]} className="p-4 bg-white shadow-sm rounded-xl border border-gray-100 flex justify-between items-center">
                                 <div>
-                                    <p className="font-bold text-lg">{item[1]}</p>
-                                    <p className="text-sm text-gray-600">釋義：{item[3]}</p>
+                                    <p className="font-bold text-lg text-violet-600">{item[1]}</p>
+                                    <p className="text-sm text-gray-500">{item[2]} · {item[3]}</p>
                                 </div>
                                 <button 
-                                    onClick={() => playThaiSpeech(item[2], speechRate)}
-                                    className="p-3 bg-violet-500 text-white rounded-full"
+                                    onClick={() => playThaiSpeech(item[2])}
+                                    className="p-3 bg-violet-500 hover:bg-violet-600 text-white rounded-full transition-all active:scale-95"
                                 >
-                                    <i data-lucide="volume-2"></i>
+                                    <i data-lucide="volume-2" className="w-5 h-5"></i>
                                 </button>
                             </div>
                         ))}
