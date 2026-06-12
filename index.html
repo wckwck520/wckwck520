@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>泰語羅馬拼音 500 高頻字高效學習玩樂屋</title>
+    <title>泰語 500 字學習樂園</title>
     <script src="https://cdn.tailwindcss.com/"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
@@ -11,69 +11,43 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
-        body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; -webkit-overflow-scrolling: touch; }
-        .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
-        .scrollbar-none::-webkit-scrollbar { display: none; }
+        body { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
     </style>
 </head>
-<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen">
+<body class="bg-slate-50 text-slate-800 min-h-screen">
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect, useCallback } = React;
+        // 核心修正：使用 Google Translate TTS API，保證所有設備都有聲音
+        const playThaiSpeech = (text) => {
+            const url = `https://translate.google.com/translate_tts?ie=UTF-8&tl=th&client=tw-ob&q=${encodeURIComponent(text)}`;
+            const audio = new Audio(url);
+            audio.play().catch(e => console.log("播放被瀏覽器阻擋，請點擊畫面再次嘗試"));
+        };
 
         function App() {
-            const [audioUnlocked, setAudioUnlocked] = useState(false);
-
-            // 1. 解鎖瀏覽器音訊限制 (關鍵：用戶第一次點擊時執行)
-            const unlockAudio = useCallback(() => {
-                if (!audioUnlocked && 'speechSynthesis' in window) {
-                    const silent = new SpeechSynthesisUtterance('');
-                    silent.volume = 0;
-                    window.speechSynthesis.speak(silent);
-                    setAudioUnlocked(true);
-                }
-            }, [audioUnlocked]);
-
-            // 2. 穩定版 TTS 播放函式
-            const playThaiSpeech = useCallback((text) => {
-                unlockAudio(); // 確保已解鎖
-                
-                if ('speechSynthesis' in window) {
-                    window.speechSynthesis.cancel();
-                    
-                    const utterance = new SpeechSynthesisUtterance(text);
-                    window._speechUtteranceRef = utterance; // 避免被 GC 回收
-
-                    utterance.lang = 'th-TH';
-                    utterance.rate = 0.85;
-
-                    // 尋找泰語語音包
-                    const voices = window.speechSynthesis.getVoices();
-                    const thaiVoice = voices.find(v => v.lang.toLowerCase().includes('th'));
-                    if (thaiVoice) utterance.voice = thaiVoice;
-
-                    window.speechSynthesis.speak(utterance);
-                }
-            }, [unlockAudio]);
-
-            // 3. 測試用按鈕 (點擊此處即可測試)
             return (
-                <div className="p-10 flex flex-col items-center justify-center min-h-screen" onClick={unlockAudio}>
-                    <h1 className="text-2xl font-bold mb-6">測試語音系統</h1>
-                    <button 
-                        onClick={() => playThaiSpeech("สวัสดีครับ")} 
-                        className="px-8 py-4 bg-violet-600 text-white rounded-2xl shadow-xl hover:bg-violet-700 transition"
-                    >
-                        播放泰語 "你好" (สวัสดีครับ)
-                    </button>
-                    <p className="mt-4 text-sm text-gray-500">如果點擊後沒聲音，請確認設備喇叭是否已開啟。</p>
+                <div className="p-6 max-w-xl mx-auto">
+                    <h1 className="text-2xl font-bold mb-6 text-center">泰語 500 字學習樂園</h1>
+                    <div className="space-y-3">
+                        {/* 這裡僅放部分測試，您之後可將整個 RAW_VOCAB_DB 放進來 */}
+                        <div className="p-4 bg-white shadow rounded-xl border flex justify-between items-center">
+                            <div>
+                                <p className="font-bold text-lg">kluai</p>
+                                <p className="text-sm text-gray-500">กล้วย · 香蕉</p>
+                            </div>
+                            <button onClick={() => playThaiSpeech("กล้วย")} className="p-3 bg-violet-500 text-white rounded-full">
+                                <i data-lucide="volume-2"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             );
         }
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
+        setTimeout(() => lucide.createIcons(), 100);
     </script>
 </body>
 </html>
