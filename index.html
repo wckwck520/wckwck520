@@ -24,8 +24,8 @@
     <!-- React and ReactDOM -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-    <!-- Babel -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Babel (鎖定穩定版本以避免 import 編譯錯誤) -->
+    <script src="https://unpkg.com/@babel/standalone@7.24.4/babel.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; -webkit-overflow-scrolling: touch; }
@@ -56,7 +56,7 @@
         const { useState, useEffect, useMemo, useCallback, useRef } = React;
 
         // ==========================================
-        // 📚 終極 850 字庫 (簡化顯示，含全部 850 字)
+        // 📚 終極 850 字庫 
         // ==========================================
         const RAW_VOCAB_DB = [
             // --- 基礎 1-500 ---
@@ -416,7 +416,7 @@
             [354,"din","ดิน","土","din-sor","ดินสอ","鉛筆(泥土)"],
             [355,"hin","หิน","石頭","kon hin","ก้อนหิน","石頭塊"],
             [356,"sai","ทราย","沙子","chai hat sai","ชายหาดทราย","沙灘"],
-            [357,"ton-mai","ต้นไม้","樹","ton-mai yai","ต้นไม้ใหญ่","大樹"],
+            [357,"ton-mai","ต้นไม้","树","ton-mai yai","ต้นไม้ใหญ่","大樹"],
             [358,"dok-mai","ดอกไม้","花","dok-mai suai","ดอกไม้สวย","花漂亮"],
             [359,"bai-mai","ใบไม้","葉子","bai-mai rwang","ใบไม้ร่วง","落葉"],
             [360,"ya","หญ้า","草","sanam ya","สนามหญ้า","草地"],
@@ -607,7 +607,7 @@
             [543,"mi sa-ne","มีเสน่ห์","有魅力","khun mi sa-ne","คุณมีเสน่ห์","你有魅力"],
             [544,"sek-si","เซ็กซี่","性感","khun sek-si mak","คุณเซ็กซี่มาก","你很性感"],
             [545,"chai-di","ใจดี","善良","khun chai-di kap chan","คุณใจดีกับฉัน","你對我很好"],
-            [546,"the","เท่","酷","faen chan the mak","แฟนฉันเท่มาก","我男友很酷"],
+            [546,"the","เท่","酷","faen chan chan the mak","แฟนฉันเท่มาก","我男友很酷"],
             [547,"wan","หวาน","甜/甜蜜","khu ni wan mak","คู่นี้หวานมาก","這對情侶很甜"],
             [548,"phi-set","พิเศษ","特別","khun khue khon phi-set","คุณคือคนพิเศษ","你是特別的人"],
             [549,"sam-khan","สำคัญ","重要的","khun sam-khan sam-rap chan","คุณสำคัญสำหรับฉัน","你對我很重要"],
@@ -807,7 +807,7 @@
             [739,"jao chuu","เจ้าชู้","花心","ya jao chuu na","อย่าเจ้าชู้นะ","別太花心喔"],
             [740,"jing jai","จริงใจ","真心","phom jing jai na","ผมจริงใจนะ","我是真心的"],
             [741,"lor lian","ล้อเล่น","開玩笑","khae lor lian","แค่ล้อเล่น","只是開玩笑的"],
-            [742,"jing jang","จริงจัง","認真","chan jing jang na","ฉันจริงจังนะ","我是認真的"],
+            [742,"jing jang","จริงจัง","認真","chan jing jang na","ฉันจริงจังนะ","我是認定的"],
             [743,"yak choe","อยากเจอ","想見面","yak choe ik","อยากเจออีก","想再見到你"],
             [744,"dtop ta","สบตา","眼神交會","rao dtop ta kan","เราสบตากัน","我們對視了"],
             [745,"saai-taa","สายตา","眼神","saai-taa khao the","สายตาเขาเท่","他的眼神很殺"],
@@ -870,7 +870,7 @@
             [802,"sohk","เศร้า","傷心","mai tong sohk","ไม่ต้องเศร้า","不用傷心"],
             [803,"laek","แลก","交換","laek line gan mai","แลกไลน์กันไหม","交換Line好嗎"],
             [804,"soh-chial","โซเชียล","社群軟體","len soh-chial","เล่นโซเชียล","滑社群軟體"],
-            [805,"ig","ไอจี","IG","kho ig dai mai","ขอไอจีได้ไหม","สามารถขอไอจีได้ไหม","可以要你的IG嗎"],
+            [805,"ig","ไอจี","IG","kho ig dai mai","สามารถขอไอจีได้ไหม","可以要你的IG嗎"],
             [806,"follow","ฟอลโลว์","追蹤","follow laew na","ฟอลโลว์แล้วนะ","已經追蹤了喔"],
             [807,"like","ไลค์","按讚","kot like hai noi","กดไลค์ให้หน่อย","幫我按個讚"],
             [808,"story","สตอรี่","限時動態","du story chan si","ดูสตอรี่ฉันสิ","看我的限動"],
@@ -2232,7 +2232,7 @@
                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
                                 <i className="fa-solid fa-magnifying-glass"></i>
                             </div>
-                            <input type="text" placeholder="搜尋拼音、含義หรือ編號 (例: 850)..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full pl-9 pr-4 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500 text-xs md:text-sm transition" />
+                            <input type="text" placeholder="搜尋拼音、含義或編號 (例: 850)..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full pl-9 pr-4 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500 text-xs md:text-sm transition" />
                         </div>
                     </div>
 
